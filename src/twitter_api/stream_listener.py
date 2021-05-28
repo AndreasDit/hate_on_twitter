@@ -1,0 +1,66 @@
+from datetime import datetime
+from textblob_de import TextBlobDE as TextBlob
+from textblob import TextBlob as TextBlobEn
+import tweepy as tw
+import sys
+import os
+import yaml
+
+sys.path.append(os.getcwd())
+import utils.logs as logs
+import utils.configs_for_code as cfg
+from utils import connectivity as connect
+
+configs_file = open(cfg.PATH_CONFIG_FILE, 'r')
+configs = yaml.load(configs_file, Loader=yaml.FullLoader)
+logger = logs.create_logger(__name__)
+
+class StreamListener(tw.StreamListener):
+    print('init class StreamListener')
+    conn, cursor = connect.connect_to_azure_sql_db()
+    hashtag_fname = 'tmp_hashtag'
+    with open(hashtag_fname) as f:
+        lines = f.readlines()
+    lines_vec = lines[0].split(',')
+    print(lines,lines_vec)
+    hashtag = lines_vec[0]
+    hashtag = hashtag.replace("'", "")
+    nb_hashtag = lines_vec[1]
+    
+
+    def on_status(self, status, conn=conn, cursor=cursor, hashtag=hashtag, nb_hashtag=nb_hashtag):
+        try:
+            if status.retweeted_status:
+                return
+        except:
+            print("This is not a retweet:")
+        tweet_text = status.text.replace("'", "")
+        print(datetime.now(), tweet_text)
+        
+        target = '[sonntagsfrage].[hate_twitter_tweets_raw]'
+        
+        blob = TextBlob(tweet_text)
+        blob_en = TextBlobEn(tweet_text)
+        polarity_de = blob.sentiment[0]
+        polarity_en = blob_en.sentiment[0]
+        subjectivity_de = blob.sentiment[1]
+        subjectivity_en = blob_en.sentiment[1]
+
+        followers = status.user.followers_count
+        fav = status.favorite_count
+        
+        list_values = [str(nb_hashtag), 
+                    "'"+hashtag+"'", 
+                    "'"+tweet_text+"'", 
+                    str(fav), 
+                    str(followers), 
+                    str(polarity_de), 
+                    str(polarity_en), 
+                    str(subjectivity_de), 
+                    str(subjectivity_en)]
+
+        connect.send_tweet_to_sql_db(conn, cursor, target, list_values)
+
+    def on_error(self, status_code):
+        if status_code == 420:
+            return False
