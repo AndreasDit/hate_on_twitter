@@ -10,6 +10,7 @@ import utils.logs as logs
 import utils.configs_for_code as cfg
 
 configs_file = open(cfg.PATH_CONFIG_FILE, 'r')
+hashtags_file = open(cfg.PATH_HASHTAGS_FILE, 'r')
 configs = yaml.load(configs_file, Loader=yaml.FullLoader)
 logger = logs.create_logger(__name__)
 
@@ -18,7 +19,7 @@ parser.add_argument("--nb-hashtag", type=str, required=True, help="number of use
 args = parser.parse_args()
 nb_hashtag = int(args.nb_hashtag)
 
-with open(cfg.PATH_HASHTAGS_FILE) as f:
+with hashtags_file as f:
     lines = f.readlines()
 list_hashtags = lines[0].split(',')
 hashtag = list_hashtags[nb_hashtag]
