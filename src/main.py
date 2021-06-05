@@ -15,25 +15,27 @@ configs = yaml.load(configs_file, Loader=yaml.FullLoader)
 logger = logs.create_logger(__name__)
 
 parser = argparse.ArgumentParser(allow_abbrev=False)
-parser.add_argument("--nb-hashtag", type=str, required=True, help="number of used hashtag")
-args = parser.parse_args()
-nb_hashtag = int(args.nb_hashtag)
+# parser.add_argument("--nb-hashtag", type=str, required=True, help="number of used hashtag")
+# args = parser.parse_args()
+# nb_hashtag = int(args.nb_hashtag)
 
 with hashtags_file as f:
     lines = f.readlines()
 list_hashtags = lines[0].split(',')
-hashtag = list_hashtags[nb_hashtag]
+stream_hashtags = list_hashtags[0:10]
+# hashtag = list_hashtags[nb_hashtag]
 
 hashtag_fname = 'tmp_hashtag'
-hashtag_fcontent = hashtag+','+str(nb_hashtag)
-print(hashtag_fcontent)
-with open(hashtag_fname, "w") as f:
-    f.write(hashtag_fcontent)
+# hashtag_fcontent = hashtag+','+str(nb_hashtag)
+# print(hashtag_fcontent)
+# with open(hashtag_fname, "w") as f:
+    # f.write(hashtag_fcontent)
 
 api = connect.connect_to_twitter()
 
 from twitter_api import stream_listener as stl
 stream_listener = stl.StreamListener()
 stream = tw.Stream(auth=api.auth, listener=stream_listener)
-print(f'Start streaming with hashtag {hashtag}.')
-stream.filter(track=[hashtag])
+# print(f'Start streaming with hashtag {hashtag}.')
+# stream.filter(track=[hashtag])
+stream.filter(track=stream_hashtags)
