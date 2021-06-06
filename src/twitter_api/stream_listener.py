@@ -32,13 +32,20 @@ class StreamListener(tw.StreamListener):
     list_hashtags = lines[0].split(',')
     stream_hashtags = list_hashtags[0:10]
 
-    def on_status(self, status, conn=conn, cursor=cursor, hashtag=hashtag, nb_hashtag=nb_hashtag):
+    def on_status(self, status, conn=conn, cursor=cursor, stream_hashtags=stream_hashtags):
         try:
             if status.retweeted_status:
                 return
         except:
             print("This is not a retweet:")
-        tweet_text = status.text.replace("'", "")
+        
+        # Get text from tweet
+        tweet_text = status.text
+        if status.truncated == True:
+            print("This tweet was shortened.")
+            tweet_text = status.extended_tweet['full_text']
+        tweet_text = tweet_text.replace("'", "")
+
         print(datetime.now(), tweet_text)
         
         target = '[sonntagsfrage].[hate_twitter_tweets_raw]'
@@ -52,21 +59,19 @@ class StreamListener(tw.StreamListener):
 
         followers = status.user.followers_count
         fav = status.favorite_count
-        print(status.entities['hashtags'])
-        for tag in stream_hashtags:
-            
         
-        # list_values = [str(nb_hashtag), 
-        #             "'"+hashtag+"'", 
-        #             "'"+tweet_text+"'", 
-        #             str(fav), 
-        #             str(followers), 
-        #             str(polarity_de), 
-        #             str(polarity_en), 
-        #             str(subjectivity_de), 
-        #             str(subjectivity_en)]
-
-        # connect.send_tweet_to_sql_db(conn, cursor, target, list_values)
+        for idx, tag in enumerate(stream_hashtags):
+            if tag in tweet_text:
+                list_values = [str(idx), 
+                            "'"+tag+"'", 
+                            "'"+tweet_text+"'", 
+                            str(fav), 
+                            str(followers), 
+                            str(polarity_de), 
+                            str(polarity_en), 
+                            str(subjectivity_de), 
+                            str(subjectivity_en)]
+                connect.send_tweet_to_sql_db(conn, cursor, target, list_values)
 
     def on_error(self, status_code):
         if status_code == 420:

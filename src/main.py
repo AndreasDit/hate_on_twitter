@@ -13,6 +13,7 @@ configs_file = open(cfg.PATH_CONFIG_FILE, 'r')
 hashtags_file = open(cfg.PATH_HASHTAGS_FILE, 'r')
 configs = yaml.load(configs_file, Loader=yaml.FullLoader)
 logger = logs.create_logger(__name__)
+n_top_hashtags = 5
 
 parser = argparse.ArgumentParser(allow_abbrev=False)
 # parser.add_argument("--nb-hashtag", type=str, required=True, help="number of used hashtag")
@@ -22,7 +23,7 @@ parser = argparse.ArgumentParser(allow_abbrev=False)
 with hashtags_file as f:
     lines = f.readlines()
 list_hashtags = lines[0].split(',')
-stream_hashtags = list_hashtags[0:10]
+stream_hashtags = list_hashtags[0:n_top_hashtags]
 # hashtag = list_hashtags[nb_hashtag]
 
 hashtag_fname = 'tmp_hashtag'
@@ -35,7 +36,8 @@ api = connect.connect_to_twitter()
 
 from twitter_api import stream_listener as stl
 stream_listener = stl.StreamListener()
-stream = tw.Stream(auth=api.auth, listener=stream_listener)
+stream = tw.Stream(auth=api.auth, listener=stream_listener, tweet_mode='extended')
 # print(f'Start streaming with hashtag {hashtag}.')
 # stream.filter(track=[hashtag])
+print(stream_hashtags)
 stream.filter(track=stream_hashtags)
