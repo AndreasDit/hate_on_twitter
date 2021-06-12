@@ -1,8 +1,8 @@
 import pandas as pd
 import pyodbc
 import yaml
-import mysql
-import mysql.connector
+# import mysql
+# import mysql.connector
 import gspread
 import os
 import sys
@@ -99,28 +99,28 @@ def connect_to_azure_sql_db():
     return conn, cursor
 
 
-def connect_to_siteground_sql_db():
-    """
-        This function creates a connection to the MySQL DB of the final website ai-for-everyone.org.
+# def connect_to_siteground_sql_db():
+#     """
+#         This function creates a connection to the MySQL DB of the final website ai-for-everyone.org.
 
-        :return: connection: Returns the connection to the DB.
-        :return: cursor: Returns the cursor which is used to perform database operations on the MySQL DB.
-    """
-    logger.info('Start connect_to_siteground_sql_db()')
+#         :return: connection: Returns the connection to the DB.
+#         :return: cursor: Returns the cursor which is used to perform database operations on the MySQL DB.
+#     """
+#     logger.info('Start connect_to_siteground_sql_db()')
 
-    # set defaults for azure sql datbse
-    server = configs['siteground']['server']
-    database = configs['siteground']['database']
-    username = configs['siteground']['sql_db_name']
-    password = configs['siteground']['sql_db_pw']
+#     # set defaults for azure sql datbse
+#     server = configs['siteground']['server']
+#     database = configs['siteground']['database']
+#     username = configs['siteground']['sql_db_name']
+#     password = configs['siteground']['sql_db_pw']
 
-    # open connection
-    conn = mysql.connector.connect(user=username, password=password,
-                                   host=server,
-                                   database=database)
-    cursor = conn.cursor()
+#     # open connection
+#     conn = mysql.connector.connect(user=username, password=password,
+#                                    host=server,
+#                                    database=database)
+#     cursor = conn.cursor()
 
-    return conn, cursor
+#     return conn, cursor
 
 
 def connect_to_google_spreadsheets(auth_type='file', credentials=None):
