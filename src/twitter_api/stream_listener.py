@@ -46,7 +46,7 @@ class StreamListener(tw.StreamListener):
             tweet_text = status.extended_tweet['full_text']
         tweet_text = tweet_text.replace("'", "")
 
-        print(datetime.now(), tweet_text)
+        # print(datetime.now(), tweet_text)
         
         target = '[sonntagsfrage].[hate_twitter_tweets_raw]'
         
