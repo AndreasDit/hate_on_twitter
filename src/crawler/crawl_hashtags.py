@@ -8,6 +8,8 @@ from twisted.internet import reactor
 from scrapy.crawler import CrawlerProcess, CrawlerRunner
 sys.path.append('.') 
 import utils.configs_for_code as cfg
+from utils import connectivity as connect
+
 
 
 def main():
