@@ -1,0 +1,6 @@
+01 * * * * cd /hate_on_twitter/src; . scripts/get_new_hashtags.sh;
+*/5 * * * * cd /hate_on_twitter/src; . scripts/start_twitter_streams.sh;
+
+
+
+
