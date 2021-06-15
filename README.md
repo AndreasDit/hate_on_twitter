@@ -8,6 +8,6 @@ Services I tried:
 
 ## Docker
 1. Pull docker image: adtest123/hate_on_twitter
-2. docker run -d -it <image>
-3. docker exec -it <containername> /bin/bash
+2. docker run -d -it image
+3. docker exec -it containername /bin/bash
 4. /etc/init.d/cron restart
